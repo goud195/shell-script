@@ -1,51 +1,38 @@
 #!/bin/bash
-# ======================================================
-# EC2 Control Script - Start or Stop instances
-# Usage:
-#   ./ec2-control.sh start
-#   ./ec2-control.sh stop
-# ======================================================
 
-# Set region
+# AWS region
 REGION="us-east-1"
 
-# List your instance IDs here (space-separated)
-INSTANCE_IDS=("i-04a937c3df6098af7" "i-0aa1dd11ddc89cbda" "i-0f57c04191340f256")
+# Instance IDs
+INSTANCES=("i-0abc123456789def0" "i-0123456789abcdef1" "i-0fedcba9876543210")
 
-# Validate input
+# Action argument
 ACTION=$1
 
-if [[ -z "$ACTION" ]]; then
-  echo "❌ Usage: $0 [start|stop|status]"
+# Ensure argument is provided
+if [[ ! "$ACTION" =~ ^(start|stop|status)$ ]]; then
+  echo "Usage: $0 [start|stop|status]"
   exit 1
 fi
 
-case "$ACTION" in
+# Perform action
+case $ACTION in
   start)
-    echo "🚀 Starting EC2 instances in region ${REGION}..."
-    aws ec2 start-instances --instance-ids "${INSTANCE_IDS[@]}" --region "$REGION"
-    aws ec2 wait instance-running --instance-ids "${INSTANCE_IDS[@]}" --region "$REGION"
-    echo "✅ Instances started successfully."
+    echo "Starting EC2 instances..."
+    aws ec2 start-instances --instance-ids "${INSTANCES[@]}" --region "$REGION"
+    aws ec2 wait instance-running --instance-ids "${INSTANCES[@]}" --region "$REGION"
     ;;
-  
   stop)
-    echo "🛑 Stopping EC2 instances in region ${REGION}..."
-    aws ec2 stop-instances --instance-ids "${INSTANCE_IDS[@]}" --region "$REGION"
-    aws ec2 wait instance-stopped --instance-ids "${INSTANCE_IDS[@]}" --region "$REGION"
-    echo "✅ Instances stopped successfully."
+    echo "Stopping EC2 instances..."
+    aws ec2 stop-instances --instance-ids "${INSTANCES[@]}" --region "$REGION"
+    aws ec2 wait instance-stopped --instance-ids "${INSTANCES[@]}" --region "$REGION"
     ;;
-  
   status)
-    echo "🔍 Checking status of EC2 instances in region ${REGION}..."
+    echo "Checking instance status..."
     aws ec2 describe-instances \
-      --instance-ids "${INSTANCE_IDS[@]}" \
+      --instance-ids "${INSTANCES[@]}" \
       --region "$REGION" \
       --query "Reservations[].Instances[].{ID:InstanceId,State:State.Name,Name:Tags[?Key=='Name']|[0].Value}" \
       --output table
-    ;;
-  
-  *)
-    echo "❌ Invalid action. Use start, stop, or status."
-    exit 1
     ;;
 esac
