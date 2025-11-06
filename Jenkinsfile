@@ -1,5 +1,5 @@
 pipeline {
-  agent any {
+  agent any 
   parameters {
     choice(name: 'ACTION', choices: ['start','stop','status'], description: 'Action to perform')
   }
@@ -27,5 +27,5 @@ pipeline {
       }
     }
   }
-}
+
 }
