@@ -1,5 +1,5 @@
 pipeline {
-  agent { docker { image 'amazon/aws-cli' } }   // uses AWS CLI docker image
+  agent any {
   parameters {
     choice(name: 'ACTION', choices: ['start','stop','status'], description: 'Action to perform')
   }
@@ -27,4 +27,5 @@ pipeline {
       }
     }
   }
+}
 }
