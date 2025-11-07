@@ -21,11 +21,13 @@ case $ACTION in
     echo "Starting EC2 instances..."
     aws ec2 start-instances --instance-ids "${INSTANCES[@]}" --region "$REGION"
     aws ec2 wait instance-running --instance-ids "${INSTANCES[@]}" --region "$REGION"
+    echo "Instances started successfully."
     ;;
   stop)
     echo "Stopping EC2 instances..."
     aws ec2 stop-instances --instance-ids "${INSTANCES[@]}" --region "$REGION"
     aws ec2 wait instance-stopped --instance-ids "${INSTANCES[@]}" --region "$REGION"
+    echo "Instances stopped successfully."
     ;;
   status)
     echo "Checking instance status..."
@@ -35,4 +37,7 @@ case $ACTION in
       --query "Reservations[].Instances[].{ID:InstanceId,State:State.Name,Name:Tags[?Key=='Name']|[0].Value}" \
       --output table
     ;;
+  *)
+    echo " Invalid action. Use start, stop, or status."
+    exit 1
 esac
