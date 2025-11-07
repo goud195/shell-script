@@ -4,7 +4,7 @@
 REGION="us-east-1"
 
 # Instance IDs
-INSTANCES=("i-0abc123456789def0" "i-0123456789abcdef1" "i-0fedcba9876543210")
+INSTANCES=("i-0aa1dd11ddc89cbda" "i-0f57c04191340f256")
 
 # Action argument
 ACTION=$1
